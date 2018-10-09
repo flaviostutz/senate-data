@@ -1,12 +1,7 @@
-# senate-data
-Brazilian Senate OpenData downloader utilities
-
-# Usage
-
-* Create docker-compose.yml
-```
 version: '3.3'
+
 services:
+
   senate-data:
     build: .
     image: flaviostutz/senate-data
@@ -16,8 +11,8 @@ services:
     volumes:
       - senate-input:/notebook/input
       - senate-output:/notebook/output
-```
 
-* Run ```docker-compose up```
+volumes:
+  senate-input:
+  senate-output:
 
-* Open http://localhost:8888/
