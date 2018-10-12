@@ -1,7 +1,7 @@
 # senate-data
 Brazilian Senate OpenData downloader utilities
 
-# Usage
+## Usage
 
 * Create docker-compose.yml
 ```
@@ -21,3 +21,21 @@ services:
 * Run ```docker-compose up```
 
 * Open http://localhost:8888/
+
+## Data downloads
+
+* Speeches
+  * http://legis.senado.leg.br/dadosabertos/plenario/lista/discursos/20130301/20130331
+  * fields senador, partido, uf, sexo, data, indexacaoTexto, speechContents
+  * output/speeches/speech-list-201304.csv - yyyymm
+  * output/speeches/speech-contents-345563.txt
+* Materias
+  * http://legis.senado.leg.br/dadosabertos/materia/pesquisa/lista?sigla=pls&ano=2013
+  * fields codigo, ementa, explicacaoEmenta, indexacaoMateria, data, casa, tipoMateria, naturezaMateria, autor, partidoAutor, local, ufAutor, assunto, relatores
+  * relatores de http://legis.senado.leg.br/dadosabertos/materia/relatorias/131506
+  * /output/materias/materias-list-2013.csv
+* Votacoes
+  * http://legis.senado.leg.br/dadosabertos/plenario/lista/votacao/20160401/20160430
+  * fields codigoMateria, ementa, explicacaoEmenta, indexacaoMateria, parlamentar, partidoParlamentar, sexoParlamentar, ufParlamentar, votoSimNao
+  * ementa, explicacaoEmenta, indexacaoMateria de http://legis.senado.leg.br/dadosabertos/materia/110428
+  * /output/votes/votes-list-201301.csv - yyyymm

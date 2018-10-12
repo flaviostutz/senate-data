@@ -705,7 +705,6 @@ toda
 todas
 todo
 todos
-trabalho
 três
 treze
 tu
@@ -1075,7 +1074,6 @@ tipo
 tive
 todos
 trabalhar
-trabalho
 tu
 último
 um
@@ -1225,7 +1223,6 @@ tipo
 tive
 todos
 trabalhar
-trabalho
 tu
 um
 uma
@@ -1692,7 +1689,6 @@ toda
 todas
 todo
 todos
-trabalho
 três
 treze
 tu
@@ -2087,7 +2083,6 @@ todas
 todo
 todos
 trabalhar
-trabalho
 treze
 três
 tu
