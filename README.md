@@ -31,7 +31,7 @@ services:
   * output/speeches/speech-contents-345563.txt
 * Materias
   * http://legis.senado.leg.br/dadosabertos/materia/pesquisa/lista?sigla=pls&ano=2013
-  * fields codigo, ementa, explicacaoEmenta, indexacaoMateria, data, casa, tipoMateria, naturezaMateria, autor, partidoAutor, local, ufAutor, assunto, relatores
+  * fields codigoMateria, data, casa, tipoMateria, naturezaMateria, codigoAutor, nomeAutor, partidoAutor, ufAutor, sexoAutor, ementa, explicacaoEmenta, indexacaoMateria, assunto, situacao, relatores
   * relatores de http://legis.senado.leg.br/dadosabertos/materia/relatorias/131506
   * /output/materias/materias-list-2013.csv
 * Votacoes
