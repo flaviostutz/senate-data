@@ -9,10 +9,6 @@ services:
       - 6006:6006
       - 8888:8888
     volumes:
-      - senate-input:/notebook/input
-      - senate-output:/notebook/output
+      - ./notebooks:/notebooks
 
-volumes:
-  senate-input:
-  senate-output:
 
