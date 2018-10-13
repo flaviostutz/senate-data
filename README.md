@@ -36,6 +36,6 @@ services:
   * /output/materias/materias-list-2013.csv
 * Votacoes
   * http://legis.senado.leg.br/dadosabertos/plenario/lista/votacao/20160401/20160430
-  * fields codigoMateria, ementa, explicacaoEmenta, indexacaoMateria, parlamentar, partidoParlamentar, sexoParlamentar, ufParlamentar, votoSimNao
+  * fields descricaoVotacao, data, codigoMateria, ementa, explicacaoEmenta, indexacaoMateria, naturezaMateria, tipoMateria, codigoParlamentar, nomeParlamentar, partidoParlamentar, sexoParlamentar, ufParlamentar, votoSimNao
   * ementa, explicacaoEmenta, indexacaoMateria de http://legis.senado.leg.br/dadosabertos/materia/110428
   * /output/votes/votes-list-201301.csv - yyyymm
