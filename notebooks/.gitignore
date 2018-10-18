@@ -2,3 +2,5 @@ output
 input
 autorun.log
 __pycache__
+.ipynb_checkpoints
+
