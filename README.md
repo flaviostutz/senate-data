@@ -27,9 +27,8 @@ services:
 * Speeches
   * http://legis.senado.leg.br/dadosabertos/plenario/lista/discursos/20130301/20130331
   * fields senador, partido, uf, sexo, data, indexacaoTexto, speechContents
-  * output/speeches/speech-list-201304.csv - yyyymm
-  * output/speeches/speech-contents-345563.txt
-* Materias
+  * output/speeches/speeches-201304.csv - yyyymm
+  Materias
   * http://legis.senado.leg.br/dadosabertos/materia/pesquisa/lista?sigla=pls&ano=2013
   * fields codigoMateria, data, casa, tipoMateria, naturezaMateria, codigoAutor, nomeAutor, partidoAutor, ufAutor, sexoAutor, ementa, explicacaoEmenta, indexacaoMateria, assunto, situacao, relatores
   * relatores de http://legis.senado.leg.br/dadosabertos/materia/relatorias/131506
