@@ -5,7 +5,36 @@ import numpy as np
 import requests
 import csv
 
-def download_senator_speeches(from_date, to_date, output_csvfile, max=None):
+def download_senate_materias(year, type='pls', max=None):
+    headers = {'Accept': 'application/json'}
+    res = requests.get('http://legis.senado.leg.br/dadosabertos/materia/pesquisa/lista?sigla=' + type + '&ano=' + year, headers=headers)
+    contents = res.json()
+
+    with open(output_csvfile, 'w', encoding='utf-8') as ofile:
+        writer = csv.writer(ofile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+        row = [
+            'CodigoPronunciamento',
+            'TipoPronunciamento',
+            'Data',
+            'SiglaCasa',
+            'TipoSessao',
+            'NomeAutor',
+            'CodigoParlamentar',
+            'Partido',
+            'UF',
+            'SexoParlamentar',
+            'DataNascimentoParlamentar',
+            'Indexacao',
+            'TextoIntegral',
+        ]
+        writer.writerow(row)
+
+        sessoes = contents['DiscursosSessao']['Sessoes']['Sessao']
+        c = 0
+        print('Downloading speeches')
+
+
+def download_senate_speeches(from_date, to_date, output_csvfile, max=None):
     headers = {'Accept': 'application/json'}
     res = requests.get('http://legis.senado.leg.br/dadosabertos/plenario/lista/discursos/' + from_date + '/' + to_date, headers=headers)
     contents = res.json()
