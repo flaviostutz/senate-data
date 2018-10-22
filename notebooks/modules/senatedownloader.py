@@ -4,34 +4,83 @@ import pandas as pd
 import numpy as np
 import requests
 import csv
+import math
 
-def download_senate_materias(year, type='pls', max=None):
+def download_senate_materias(year, output_csvfile, type='pls', max=None):
     headers = {'Accept': 'application/json'}
-    res = requests.get('http://legis.senado.leg.br/dadosabertos/materia/pesquisa/lista?sigla=' + type + '&ano=' + year, headers=headers)
+    res = requests.get('http://legis.senado.leg.br/dadosabertos/materia/pesquisa/lista?sigla=' + type + '&ano=' + str(year), headers=headers)
     contents = res.json()
 
     with open(output_csvfile, 'w', encoding='utf-8') as ofile:
         writer = csv.writer(ofile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
         row = [
-            'CodigoPronunciamento',
-            'TipoPronunciamento',
-            'Data',
-            'SiglaCasa',
-            'TipoSessao',
-            'NomeAutor',
-            'CodigoParlamentar',
-            'Partido',
-            'UF',
-            'SexoParlamentar',
-            'DataNascimentoParlamentar',
-            'Indexacao',
-            'TextoIntegral',
+            'CodigoMateria',
+            'SiglaCasaMateria',
+            'SiglaSubtipoMateria',
+            'AnoMateria',
+            'DescricaoMateria',
+            'EmentaMateria',
+            'ExplicacaoEmentaMateria',
+            'DataApresentacao',
+            'NomeNatureza',
+            'CodigoParlamentarAutor',
+            'NomeParlamentarAutor',
+            'SexoParlamentarAutor',
+            'UfParlamentarAutor',
+            'PartidoParlamentarAutor',
+            'SiglaSituacaoMateria',
+            'SiglaLocalMateria',
+            'CodigosRelatoresMateria'
         ]
         writer.writerow(row)
 
-        sessoes = contents['DiscursosSessao']['Sessoes']['Sessao']
+        materias = contents['PesquisaBasicaMateria']['Materias']['Materia']
         c = 0
-        print('Downloading speeches')
+        print('Downloading materias')
+        for materia in materias:
+            if max!=None and c >= max:
+                break
+
+            try:
+                # get relatores
+                codigoMateria = materia['IdentificacaoMateria']['CodigoMateria']
+                res = requests.get('http://legis.senado.leg.br/dadosabertos/materia/relatorias/' + codigoMateria, headers=headers)
+                mc = res.json()
+
+                codigosRelatores = ''
+                if 'HistoricoRelatoria' in mc['RelatoriaMateria']['Materia']:
+                    relatores = mc['RelatoriaMateria']['Materia']['HistoricoRelatoria']['Relator']
+                    if 'IdentificacaoParlamentar' in relatores:
+                        codigosRelatores = str(relatores['IdentificacaoParlamentar']['CodigoParlamentar'])
+                    else:
+                        codigosRelatores = ' '.join([str(x['IdentificacaoParlamentar']['CodigoParlamentar']) for x in relatores])
+
+                row = [
+                    codigoMateria,
+                    materia['IdentificacaoMateria']['SiglaCasaIdentificacaoMateria'],
+                    materia['IdentificacaoMateria']['SiglaSubtipoMateria'],
+                    materia['IdentificacaoMateria']['AnoMateria'],
+                    materia['IdentificacaoMateria']['DescricaoIdentificacaoMateria'],
+                    materia['DadosBasicosMateria']['EmentaMateria'],
+                    dict_attr(materia, 'DadosBasicosMateria.ExplicacaoEmentaMateria', ''),
+                    materia['DadosBasicosMateria']['DataApresentacao'],
+                    materia['DadosBasicosMateria']['NaturezaMateria']['NomeNatureza'],
+                    dict_attr(materia, 'AutoresPrincipais.AutorPrincipal.IdentificacaoParlamentar.CodigoParlamentar', 0),
+                    dict_attr(materia, 'AutoresPrincipais.AutorPrincipal.IdentificacaoParlamentar.NomeParlamentar', dict_attr(materia, 'AutoresPrincipais.AutorPrincipal.NomeAutor', '')),
+                    dict_attr(materia, 'AutoresPrincipais.AutorPrincipal.IdentificacaoParlamentar.SexoParlamentar', ''),
+                    dict_attr(materia, 'AutoresPrincipais.AutorPrincipal.IdentificacaoParlamentar.UfParlamentar', ''),
+                    dict_attr(materia, 'AutoresPrincipais.AutorPrincipal.IdentificacaoParlamentar.SiglaPartidoParlamentar', ''),
+                    materia['SituacaoAtual']['Autuacoes']['Autuacao']['Situacao']['SiglaSituacao'],
+                    materia['SituacaoAtual']['Autuacoes']['Autuacao']['Local']['SiglaLocal'],
+                    codigosRelatores
+                ]
+                writer.writerow(row)
+                sys.stdout.write('.')
+                c = c + 1
+
+            except Exception as e:
+                traceback.print_exc(file=sys.stdout)
+                print('exception ' + str(e))
 
 
 def download_senate_speeches(from_date, to_date, output_csvfile, max=None):
@@ -121,7 +170,6 @@ def get_senator_info(senator_id, cache=True):
         senator_info_cache[senator_id] = info
         return info
 
-
 def dict_attr(valueDict, attrPath, defaultValue=''):
     if type(valueDict) != dict:
         raise 'valueDict must be dict type'
@@ -130,6 +178,9 @@ def dict_attr(valueDict, attrPath, defaultValue=''):
     for p in parts:
         if p in cv:
             cv = cv.get(p)
+            if cv == 'NaN':
+                return defaultValue
         else:
             return defaultValue
     return cv
+

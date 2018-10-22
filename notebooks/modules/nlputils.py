@@ -2,6 +2,8 @@ import nltk
 import re
 from nltk.corpus import floresta
 from nltk.stem import SnowballStemmer
+import os.path
+import PyPDF2
 
 class StemFilterTokenizeProcessor:
 
@@ -55,3 +57,18 @@ class StemFilterTokenizeProcessor:
 
     def stem_dict(self) :
         return self.stem_dict
+
+
+def pdf_text_extract(pdf_path):
+    if os.path.isfile(pdf_path) == False:
+        raise Exception('File not found: ' + pdf_path)
+    with open(pdf_path,'rb') as pf:
+        pdfReader = PyPDF2.PdfFileReader(pf)
+        num_pages = pdfReader.numPages
+        count = 0
+        text = ''
+        while count < num_pages:
+            pageObj = pdfReader.getPage(count)
+            count +=1
+            text += pageObj.extractText()
+        return text

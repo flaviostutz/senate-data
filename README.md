@@ -24,7 +24,7 @@ services:
 
 ## Data downloads
 
-* Speeches
+* Speeches OK
   * http://legis.senado.leg.br/dadosabertos/plenario/lista/discursos/20130301/20130331
   * fields senador, partido, uf, sexo, data, indexacaoTexto, speechContents
   * output/speeches/speeches-201304.csv - yyyymm
