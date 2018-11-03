@@ -3,6 +3,27 @@ import re
 from nltk.corpus import floresta
 from nltk.stem import SnowballStemmer
 
+#pt nouns list
+pt_sents = {}
+tsents = floresta.tagged_sents()
+for sent in tsents:
+    for (w,t) in sent:
+        pt_sents[w.lower()] = t
+
+def is_noun(term):
+    if term.lower() in pt_sents:
+        tt = pt_sents[term.lower()]
+        return re.match('.*\+n$', tt) or re.match('^N<\+.*$', tt)
+    else:
+        return False
+
+def is_prop(term):
+    if term.lower() in pt_sents:
+        tt = pt_sents[term.lower()]
+        return re.match('^H\+prop$', tt) or re.match('^SUBJ\+prop$', tt) or re.match('^P<\+prop$', tt)
+    else:
+        return False
+
 class StemFilterTokenizeProcessor:
 
     def __init__(self, stopwords=[], min_size=3, filter_regex='.*', stem_language=None, stem_complete=False, only_nouns=False):
@@ -15,31 +36,10 @@ class StemFilterTokenizeProcessor:
         self.stem_complete = stem_complete
         self.only_nouns = only_nouns
 
-        #nouns list
-        self.pt_terms = {}
-        tsents = floresta.tagged_sents()
-        for sent in tsents:
-            for (w,t) in sent:
-                self.pt_terms[w.lower()] = t
-
         self.stem_dict = dict()
         self.stemmer = None
         if stem_language != None:
             self.stemmer = SnowballStemmer(stem_language)
-
-    def is_noun(self, term):
-        if term.lower() in self.pt_terms:
-            tt = self.pt_terms[term.lower()]
-            return re.match('.*\+n$', tt) or re.match('^N<\+.*$', tt)
-        else:
-            return False
-
-    def is_prop(self, term):
-        if term.lower() in self.pt_terms:
-            tt = self.pt_terms[term.lower()]
-            return re.match('^H\+prop$', tt) or re.match('^SUBJ\+prop$', tt) or re.match('^P<\+prop$', tt)
-        else:
-            return False
 
     def tokenize_text(self, text):
         tokens = nltk.word_tokenize(text.lower())
@@ -48,7 +48,7 @@ class StemFilterTokenizeProcessor:
         #         print('NOT NOUN: ' + tt)
         #         if tt in self.pt_terms:
         #             print('>>' + self.pt_terms[tt])
-        tokens = [self.stem(t) for t in tokens if (self.only_nouns==False or self.is_noun(t) or self.is_prop(t)) and ((len(t)>=self.min_size) and (t not in self.stopwords) and (re.match(self.filter_regex, t)))]
+        tokens = [self.stem(t) for t in tokens if (self.only_nouns==False or is_noun(t) or is_prop(t)) and ((len(t)>=self.min_size) and (t not in self.stopwords) and (re.match(self.filter_regex, t)))]
         if self.stem_complete:
             tokens = [self.stem_dict[t] for t in tokens]
         return tokens
